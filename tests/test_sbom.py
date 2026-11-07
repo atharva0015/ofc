@@ -15,6 +15,7 @@ def test_normalize_license_handles_common_forms() -> None:
         "MIT": "MIT",
         "MIT License": "MIT",
         "MIT-0": "MIT-0",
+        "MIT-CMU": "MIT-CMU",
         "Apache 2.0": "Apache-2.0",
         "Apache-2.0 OR BSD-3-Clause": "Apache-2.0 OR BSD-3-Clause",
         "Apache-2.0 AND BSD-2-Clause": "Apache-2.0 AND BSD-2-Clause",
@@ -38,6 +39,7 @@ def test_normalize_license_handles_common_forms() -> None:
 
 def test_license_allowed_uses_or_and_rules() -> None:
     assert sbom.license_allowed("MIT")
+    assert sbom.license_allowed("MIT-CMU")
     assert sbom.license_allowed("MPL-2.0")
     assert sbom.license_allowed("LGPL-3.0-only")
     assert not sbom.license_allowed("GPL-3.0")

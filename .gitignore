@@ -27,6 +27,11 @@ benchmark/reports/*.log
 benchmark/reports/*.jsonl
 !benchmark/reports/.gitkeep
 sbom.json
+
+# Generated demo outputs (not source)
+demo_app.zip
+receipt_audit_*.log
+
 # NOTE: kept tracked (not ignored): healing/quality/golden.json,
 # healing/quality/registry.json, benchmark/reports/.gitkeep,
 # reports/run_logs/ (baseline run evidence)

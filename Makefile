@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard studio demo-ui
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard studio demo-ui sbom
 
 test:
 	pytest -q
@@ -68,3 +68,6 @@ studio:
 
 demo-ui:
 	python -m demo_app.app
+
+sbom:
+	python -m scripts.sbom --check

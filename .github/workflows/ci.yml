@@ -43,8 +43,8 @@ jobs:
           python-version: "3.12"
       - name: Install deps
         run: pip install -e .[dev]
-      - name: SBOM
-        run: python -m scripts.sbom
+      - name: SBOM and license check
+        run: python -m scripts.sbom --check
       - name: Retention dry-run
         run: python -m scripts.retention
 

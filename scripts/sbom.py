@@ -6,6 +6,9 @@ has an unknown or disallowed license.
 
 The allowlist was approved by the project owner on 2026-11-06: permissive
 licenses plus MPL-2.0 and LGPL-3.0 for the existing transitive dependencies.
+MIT-CMU is the permissive CMU/MIT-style license used by Pillow, which can be
+present in developer environments through optional presentation tooling; it is
+not a project runtime dependency.
 See `docs/LICENSE_DECISION.md` and `docs/COMPLIANCE.md`.
 """
 
@@ -21,6 +24,7 @@ OUT = "sbom.json"
 ALLOWLIST = (
     "MIT",
     "MIT-0",
+    "MIT-CMU",
     "Apache-2.0",
     "BSD-2-Clause",
     "BSD-3-Clause",

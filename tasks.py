@@ -40,6 +40,7 @@ TASKS: dict[str, list[list[str]]] = {
     "dashboard": [[sys.executable, "-m", "healing.dashboard.app"]],
     "studio": [[sys.executable, "-m", "healing.codebase.app"]],
     "demo-ui": [[sys.executable, "-m", "demo_app.app"]],
+    "sbom": [[sys.executable, "-m", "scripts.sbom", "--check"]],
 }
 
 
