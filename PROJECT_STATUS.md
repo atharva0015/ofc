@@ -17,11 +17,12 @@ classify → match → sandbox replay → layered Critic → policy gate → exp
 alert / shadow PR, with an API sidecar, a read-only local dashboard, the Codebase
 Healing & Optimality Studio Web UI, an independent demo e-commerce storefront, and
 quality tooling. **MEASURED this session (2026-11-07, Python 3.12.10):
-222 tests pass; ruff check and ruff format are clean; mypy reports 0 issues in
-60 source files; 193 files are already formatted; the 24-case demo matches
+229 tests pass; ruff check and ruff format are clean; mypy reports 0 issues in
+60 source files; 195 files are already formatted; the 24-case demo matches
 24/24; gates report 11 PASS, 0 FAIL, 1 UNVERIFIED (normal mode exit 0; strict
-mode exit 1 on the survival gate); and the SBOM/license check passes in both
-the project venv (61/61) and a clean venv (56/56).**
+mode exit 1 on the survival gate); the SBOM/license check passes in both
+the project venv (61/61) and a clean venv (56/56); and the pinned gitleaks
+scan is clean.**
 The 2026-11-06 measurement correction was explicitly approved by the project owner:
 the adversarial gate now measures the shipped orchestrator path (0.0, all 9 cases escalate),
 and the latency gate measures pipeline overhead (19.99 ms). The raw matcher's 9/9
@@ -46,9 +47,9 @@ adversarial heals and the 1122 ms browser time remain visible as non-gating diag
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 222 passed in 97.67 s |
+| `pytest -q` | 229 passed in 95.53 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 193 files already formatted |
+| `ruff format --check .` | 195 files already formatted |
 | `mypy healing` | no issues in 60 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.bench_demo_cases` | 24/24, 0 false heals, 0 wrong escalations |
@@ -58,6 +59,8 @@ adversarial heals and the 1122 ms browser time remain visible as non-gating diag
 | `python tasks.py demo-ui` | Demo E-Commerce Storefront on port 8082, HTTP 200 |
 | `python -m scripts.bench_golden_live` | 24 cases, heal_accuracy 1.0 |
 | `python -m scripts.sbom --check` | 61/61 allowed in the project venv; 56/56 in a clean venv, exit 0 |
+| `python -m scripts.secret_scan --self-test` | seeded AWS-shaped key detected; clean control passes |
+| `python -m scripts.secret_scan` | gitleaks 8.30.1 history scan clean; `--mode dir` worktree clean |
 | `python -m scripts.check_gates` | 11 PASS / 0 FAIL / 1 UNVERIFIED, exit 0 |
 | `python -m scripts.check_gates --strict` | same gate counts, exit 1 on the UNVERIFIED survival gate |
 
@@ -165,8 +168,9 @@ is disabled by default.
 
 - **CI workflows authored**: `ci.yml` runs lint-test, golden, compliance,
   and gates on Python 3.12; `heal-pr.yml` runs unit tests, staging verify,
-  a five-run stability loop, a negative check, a grep secret scan, and a
-  policy check. **UNVERIFIED** in GitHub Actions (no runs observed here).
+  a five-run stability loop, a negative check, a pinned gitleaks secret scan,
+  and a policy check. **UNVERIFIED** in GitHub Actions (no runs observed
+  here).
 - The `gates` CI job now passes locally (11/0/1, exit 0), but the real
   GitHub Actions run is still unobserved. The strict release check exits 1
   until the survival gate has history or a written deferral.
@@ -224,21 +228,23 @@ green on 3.12 observed.
 - **2026-11-07:** added the Codebase Healing & Optimality Studio, the
   NovaMart demo storefront, and the two-part academic whitebook. Switched the
   project license to MIT, added fail-closed SBOM/license checking, and wired
-  it into CI, `make sbom`, and `python tasks.py sbom`. Re-verified 222 tests,
-  193 formatted files, mypy on 60 source files, Studio/storefront HTTP 200,
-  gates 11/0/1, and SBOM 61/61 (project venv) / 56/56 (clean venv). Evidence:
-  `reports/evidence/2026-11-07/`.
+  it into CI, `make sbom`, and `python tasks.py sbom`. Replaced the grep
+  secret heuristic with a pinned, SHA-256-verified gitleaks scan that proves
+  detection with a seeded secret before scanning history. Re-verified 229
+  tests, 195 formatted files, mypy on 60 source files, Studio/storefront HTTP
+  200, gates 11/0/1, SBOM 61/61 (project venv) / 56/56 (clean venv), and a
+  clean gitleaks run. Evidence: `reports/evidence/2026-11-07/`.
 - **2026-11-06:** project owner approved the gate measurement correction:
   adversarial FHR gates the orchestrator path (0.0), latency gates pipeline
   overhead (19.99 ms), and the raw matcher/browser numbers remain
   diagnostics. Gates are now **11 PASS / 0 FAIL / 1 UNVERIFIED**; normal
   mode exits 0 and strict mode exits 1 on the survival UNVERIFIED.
-- Tests: 166 → 204 (2026-11-06) → **222 passed** (2026-11-07);
+- Tests: 166 → 204 (2026-11-06) → **229 passed** (2026-11-07);
   lint/mypy re-verified on Python 3.12.10.
 - Onboarding: `tasks.py` now runs pytest, ruff, and mypy through
   `sys.executable`, so a fresh venv cannot silently fall back to a PATH
   interpreter. A clean temp venv installed with `pip install -e ".[dev]"`,
-  passed 204 tests (222 on the 2026-11-07 rerun), ran the 24-case demo, and
+  passed 204 tests (229 on the 2026-11-07 rerun), ran the 24-case demo, and
   served the dashboard.
 - Dashboard: added a GET-only local page for gates, recent explanation
   records, and the latest saved metrics snapshot. Records are

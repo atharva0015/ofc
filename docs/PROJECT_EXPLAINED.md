@@ -602,13 +602,13 @@ The core reference MVP is largely complete:
 - **Codebase Healing & Optimality Studio:** modern Web UI on port 8081 (`tasks.py studio`) with a 3-stage interactive wizard (1. Codebase zip upload or sample selection with 5.2s animated radar scanner modal -> 2. Defect and performance bottleneck classification -> 3. Explainable AI audit breakdown with syntax-highlighted diffs and one-click zip export), Dark/Light theme toggle, AST bug repair engine, and algorithmic complexity optimizer ($O(N^2) \rightarrow O(1)$, dynamic programming memoization, loop buffer joins).
 - **Standalone Demo Storefront:** independent NovaMart e-commerce app on port 8082 (`tasks.py demo-ui`) with live business logic and seeded defect injection.
 - **Academic Whitebook:** complete 93-page B.E. Computer Engineering project whitebook in `docs/WHITEBOOK_PART1.md` and `docs/WHITEBOOK_PART2.md`.
-- **Tests and docs:** 222 passing tests, clean lint/type checks across 60 source files, README, operator runbook, evidence index, architecture docs.
+- **Tests and docs:** 229 passing tests, clean lint/type checks across 60 source files, README, operator runbook, evidence index, architecture docs.
 
 The project backlog currently tracks:
 
-- **67 done**
+- **68 done**
 - **34 partial**
-- **18 open**
+- **17 open**
 
 "Partial" means the feature exists, but it is missing a live, external, or
 executable proof. It is not the same as "not built."
@@ -629,7 +629,7 @@ look real even when it is simulated.
 
 ### What is measured now
 
-- The **222-test suite** (2026-11-07).
+- The **229-test suite** (2026-11-07).
 - The 24-case demo.
 - The in-process benchmarks.
 - The quality gates: 11 PASS / 0 FAIL / 1 UNVERIFIED.
@@ -638,6 +638,8 @@ look real even when it is simulated.
   localhost).
 - The SBOM/license check: 61/61 allowed in the project venv, 56/56 in a
   clean venv.
+- The gitleaks secret scan: the scanner catches a seeded key, and the
+  worktree and git history are clean.
 - The fresh-venv quickstart.
 
 ### What is measured but historical
@@ -672,7 +674,7 @@ path, not as proof of live browser or production behavior.
 
 ### Test and gate status
 
-- **222 tests passed** on Python 3.12.10.
+- **229 tests passed** on Python 3.12.10.
 - Lint and type checks are clean (0 issues in 60 source files).
 - The fresh-venv quickstart was verified.
 - Quality gates: **11 PASS / 0 FAIL / 1 UNVERIFIED**.
@@ -726,8 +728,10 @@ The raw numbers remain in the reports and on the dashboard's
   review remain.
 - **The SBOM check is wired into CI, but GitHub Actions is unobserved.** The
   local check passes; a real CI run still needs to be recorded.
-- **The secret scan is still grep-based.** It should be replaced before
-  distribution.
+- **The secret scan uses a third-party binary.** `scripts/secret_scan.py`
+  runs pinned gitleaks 8.30.1 and fails closed when it is missing, but local
+  runs need `gitleaks` on PATH or `GITLEAKS_BIN`, and GitHub Actions is still
+  unobserved.
 - **The survival gate has no history.** It reports `insufficient_data` until
   30 days of heal history exists, so `gates-strict` still exits 1.
 - **Vision/LLM is a DROP.** The code and benchmark exist, but there are no
@@ -759,7 +763,7 @@ python3.12 -m venv .venv312
 .venv312\Scripts\python tasks.py test
 ```
 
-Expected result: **222 passed**.
+Expected result: **229 passed**.
 
 ### Run the presentation demo
 
@@ -915,8 +919,9 @@ The backlog has three priority levels.
 
 ### P1 - before merge and release
 
-Completed 2026-11-07: the project license is MIT, and the SBOM/license check
-is enforced by CI, `make sbom`, and `python tasks.py sbom`.
+Completed 2026-11-07: the project license is MIT, the SBOM/license check is
+enforced by CI, `make sbom`, and `python tasks.py sbom`, and the grep secret
+heuristic is replaced by a pinned gitleaks scan.
 
 - Activate the survival gate or record a formal deferral.
 - Fix the `token-cart` observer gap.
@@ -926,7 +931,6 @@ is enforced by CI, `make sbom`, and `python tasks.py sbom`.
 - Install the real GitHub App and open one heal PR and one revert PR.
 - Smoke-test real Slack/Teams/Jira delivery.
 - Close the missing test/artifact debt.
-- Replace the grep-based secret scan.
 - Complete legal review and the vendor/subprocessor register.
 - Approve the 12 quality targets.
 - Confirm release blockers and cut the next tag.

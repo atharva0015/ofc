@@ -210,8 +210,15 @@ path this retention job scans.
 .venv312/Scripts/python -m scripts.check_gates
 .venv312/Scripts/python -m scripts.check_gates --strict
 .venv312/Scripts/python -m scripts.sbom --check
+.venv312/Scripts/python -m scripts.secret_scan --self-test
+.venv312/Scripts/python -m scripts.secret_scan
 .venv312/Scripts/python -m scripts.evidence_snapshot
 ```
+
+The secret-scan commands need gitleaks 8.30.1 on `PATH` or `GITLEAKS_BIN`;
+a missing scanner exits 2 instead of passing. The first command proves the
+scanner catches a seeded key; the second scans git history. CI downloads the
+pinned Linux release and verifies its SHA-256 before running both.
 
 The gate command currently exits 0 with **11 PASS / 0 FAIL / 1 UNVERIFIED**.
 The former red gates now use the human-approved orchestrator-path
@@ -235,6 +242,9 @@ survival history cannot pass as green.
   locally, in CI, and through `make sbom` / `python tasks.py sbom`. The
   project is MIT. GitHub Actions execution is still unobserved here, so the
   CI half is **UNVERIFIED** until a real run is recorded.
+- Secret scanning uses gitleaks 8.30.1. Local runs need the binary on `PATH`
+  or `GITLEAKS_BIN`; the scan fails closed when it is missing. The CI download
+  is SHA-256 pinned, but GitHub Actions execution is still unobserved.
 - Retention is irreversible after `--apply`.
 
 Stop and ask a human owner if any of these are true: a record hash mismatch,

@@ -26,13 +26,13 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 | # | Claim | Exact command | Output artifact | Date | Label | Latest re-run |
 |---|---|---|---|---|---|---|
-| 1 | 222 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-07/pytest.txt` | 2026-11-07 | MEASURED | **MATCH** — 222 passed in 97.67 s (1 warning), exit 0 |
+| 1 | 229 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-07/pytest.txt` | 2026-11-07 | MEASURED | **MATCH** — 229 passed in 95.53 s (1 warning), exit 0 |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
 | 5 | Healenium live: accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` (ignored); tracked summary `docs/LIVE_VS_SIM.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; the gate and index still read the unchanged 2026-10-08 report. **UNVERIFIED now.** |
 | 6 | Critic catch rate 1.000 | `python -m scripts.bench_verify` | `benchmark/reports/verify.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_verify.txt`, `p0-verify.txt` | 2026-10-14; re-run 2026-11-04 | SIMULATED | **MATCH** — report hash unchanged; `catch_rate=1.0`, `false_reject_rate=0.0`, `false_heal_rate=0.0` |
-| 7 | Gate result 11 PASS / 0 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-06/gates.txt`; strict: `gates-strict.txt` | 2026-11-06 | MEASURED | **MATCH** — normal mode exit 0; strict mode exit 1 on the UNVERIFIED survival gate |
+| 7 | Gate result 11 PASS / 0 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-07/gates.txt`; strict: `gates-strict.txt` | 2026-11-07 | MEASURED | **MATCH** — normal mode exit 0; strict mode exit 1 on the UNVERIFIED survival gate |
 | 8 | Live E2E pipeline 24/24, 0 false heals, 0 escaped | `python -m scripts.bench_e2e_live` | `benchmark/reports/e2e_live.json` + `.md` (ignored); tracked summary `docs/E2E_LIVE.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; **UNVERIFIED now.** |
 | 9 | Live golden accuracy 1.0 on 24 cases | `python -m scripts.bench_golden_live` | `reports/evidence/2026-11-05/bench_golden_live.txt`, `golden_live.json` | 2026-11-05 derivation | DERIVED from live 2026-10-08 | **MATCH** — `heal_accuracy=1.0`, `cases=24`, `escaped=0`; stack not re-run |
 
@@ -138,9 +138,9 @@ starts with the exact command and ends with the exit code.
 
 | Check | Exact command | Artifact | Result |
 |---|---|---|---|
-| Full suite | `python -m pytest -q` | `reports/evidence/2026-11-07/pytest.txt` | **222 passed**, 1 warning, 97.67 s, exit 0 |
+| Full suite | `python -m pytest -q` (with `GITLEAKS_BIN` set) | `reports/evidence/2026-11-07/pytest.txt` | **229 passed**, 1 warning, 95.53 s, exit 0 |
 | Ruff check | `python -m ruff check .` | `ruff-check.txt` | clean, exit 0 |
-| Ruff format | `python -m ruff format --check .` | `ruff-format.txt` | 193 files already formatted, exit 0 |
+| Ruff format | `python -m ruff format --check .` | `ruff-format.txt` | 195 files already formatted, exit 0 |
 | Types | `python -m mypy healing` | `mypy.txt` | no issues in 60 source files, exit 0 |
 | Gates | `python -m scripts.check_gates` | `gates.txt` | **11 PASS / 0 FAIL / 1 UNVERIFIED**, exit 0 |
 | Strict gates | `python -m scripts.check_gates --strict` | `gates-strict.txt` | 11/0/1, `result: FAIL (0 failing, 1 unverified in strict mode)`, exit 1 (expected) |
@@ -151,13 +151,19 @@ starts with the exact command and ends with the exit code.
 | Storefront HTTP | start `python -m demo_app.app`; `GET http://127.0.0.1:8082/` | `storefront-http.txt` | **HTTP 200**, 17,519 bytes, title “NovaMart - Demo E-Commerce & Order Analytics” |
 | SBOM (project venv) | `python -m scripts.sbom --check` | `sbom-check.txt` | 61/61 allowed, 0 disallowed, `result: PASS`, exit 0 |
 | SBOM (clean venv) | same command in a fresh `pip install -e ".[dev]"` venv | `sbom-check-clean.txt` | 56/56 allowed, 0 disallowed, `result: PASS`, exit 0 |
+| Secret-scan self-test | `python -m scripts.secret_scan --self-test` | `secret-scan-selftest.txt` | seeded AWS-shaped key detected (1 finding); clean control passes; exit 0 |
+| Secret scan, worktree | `python -m scripts.secret_scan --mode dir` | `secret-scan-worktree.txt` | gitleaks 8.30.1, clean, exit 0 |
+| Secret scan, history | `python -m scripts.secret_scan` | `secret-scan-history.txt` | gitleaks 8.30.1, full git history clean, exit 0 |
 | Quality snapshot | `python tasks.py evidence-snapshot` | `evidence-snapshot.txt`, `quality_snapshot.json` | exit 0; masking, narrative, calibration, autonomy, metrics, survival status |
 
 The Studio/storefront rows prove the local server starts and returns HTTP 200;
 the interactive flows are covered by `tests/test_codebase_app.py` and
 `tests/test_codebase_healing.py`. They do **not** prove a containerized or
-network-isolated sandbox. GitHub Actions was not observed from this host, so
-the CI wiring remains **UNVERIFIED** until a real run is recorded.
+network-isolated sandbox. The secret-scan self-test proves the scanner catches
+a seeded credential before it scans the repository; the pinned CI download and
+the two scan steps are covered by `tests/test_secret_scan.py`. GitHub Actions
+was not observed from this host, so the CI wiring remains **UNVERIFIED** until
+a real run is recorded.
 
 ## Operator runbook (2026-11-06)
 
@@ -263,7 +269,7 @@ fails the suite).
 
 **No differences.** The two gaps flagged in the earlier audit are closed:
 the held-out case files are now frozen and hash-checked, and the freeze
-record's test count is refreshed to 222.
+record's test count is refreshed to 229.
 
 ## Claims with no reproducible command
 

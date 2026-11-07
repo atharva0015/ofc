@@ -9,9 +9,9 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **67 done · 34 partial · 18 open** (was 62 / 33 / 20 after the
-2026-11-04 audit; the v3 Studio/storefront/whitebook items, MIT license, and
-the SBOM enforcement are reflected).
+At a glance: **68 done · 34 partial · 17 open** (was 62 / 33 / 20 after the
+2026-11-04 audit; the v3 Studio/storefront/whitebook items, MIT license, SBOM
+enforcement, and gitleaks secret scan are reflected).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -259,11 +259,12 @@ the SBOM enforcement are reflected).
 
 ### 1.11 Tests and documentation
 
-- [x] **222 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **229 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
   held-out set, gates, dashboard, runbook, metrics, codebase healing,
-  storefront, and SBOM checks (**MEASURED 2026-11-07**). Evidence: the suite
-  itself; `reports/evidence/2026-11-07/pytest.txt` (222 passed, exit 0).
+  storefront, SBOM, and secret-scan checks (**MEASURED 2026-11-07**). Evidence:
+  the suite itself; `reports/evidence/2026-11-07/pytest.txt` (229 passed,
+  exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
@@ -415,7 +416,7 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   available** — otherwise present the 2026-10-08 results explicitly as
   historical/UNVERIFIED, not as fresh measurements. **M**.
 
-### P1 - before merge to main (12 open, 6 done)
+### P1 - before merge to main (11 open, 7 done)
 
 - [x] **P1.1 Resolve `false_heal_rate_adversarial`** — human-approved
   2026-11-06: gate the shipped orchestrator path from `e2e_live.json`
@@ -468,8 +469,14 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   Evidence: `tests/test_sbom.py`; `reports/evidence/2026-11-07/sbom-check.txt`
   (61/61, exit 0) and `sbom-check-clean.txt` (56/56, exit 0). GitHub Actions
   execution is unobserved (P1.7). **S**.
-- [ ] **P1.13 Replace the grep-based secret scan** with gitleaks/trufflehog if
-  the project will be distributed. **S**.
+- [x] **P1.13 Replace the grep-based secret scan** - `scripts/secret_scan.py`
+  runs pinned gitleaks 8.30.1 against `.gitleaks.toml`, proves detection with a
+  seeded key, and fails closed when the scanner is missing. CI downloads the
+  Linux release with a SHA-256 pin and scans on every PR. Evidence:
+  `tests/test_secret_scan.py`;
+  `reports/evidence/2026-11-07/secret-scan-selftest.txt` and
+  `secret-scan-worktree.txt` (exit 0). GitHub Actions execution is unobserved
+  (P1.7). **S**.
 - [ ] **P1.14 Activate the survival gate or record a formal deferral** once 30
   days of heal history exists (today it reports `insufficient_data`). **S**.
 - [x] **P1.15 Choose the project license** - MIT recorded and applied
