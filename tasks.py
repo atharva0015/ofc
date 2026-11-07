@@ -41,6 +41,10 @@ TASKS: dict[str, list[list[str]]] = {
     "studio": [[sys.executable, "-m", "healing.codebase.app"]],
     "demo-ui": [[sys.executable, "-m", "demo_app.app"]],
     "sbom": [[sys.executable, "-m", "scripts.sbom", "--check"]],
+    "secret-scan": [
+        [sys.executable, "-m", "scripts.secret_scan", "--self-test"],
+        [sys.executable, "-m", "scripts.secret_scan"],
+    ],
 }
 
 

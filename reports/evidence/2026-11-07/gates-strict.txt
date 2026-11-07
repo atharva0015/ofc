@@ -1,4 +1,6 @@
-﻿PASS heal_accuracy [live]: 1.0 >= 0.95
+﻿command: python -m scripts.check_gates --strict
+
+PASS heal_accuracy [live]: 1.0 >= 0.95
 PASS false_heal_rate_overall [sim]: 0.0 == 0.0
 PASS false_heal_rate_adversarial [live]: 0.0 == 0.0
 PASS critic_catch_rate [sim]: 1.0 >= 0.9
@@ -14,4 +16,5 @@ DIAGNOSTIC raw_matcher_adversarial_fhr: 1.0 (not gated; the orchestrator path is
 DIAGNOSTIC browser_latency_per_heal_ms: 1122.0797958352098 (not gated; pipeline overhead is the gate)
 MEASURED PASS 11 / FAIL 0 / UNVERIFIED 1
 result: FAIL (0 failing, 1 unverified in strict mode)
+
 exit_code: 1

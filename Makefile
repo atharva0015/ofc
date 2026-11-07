@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard studio demo-ui sbom
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard studio demo-ui sbom secret-scan
 
 test:
 	pytest -q
@@ -71,3 +71,7 @@ demo-ui:
 
 sbom:
 	python -m scripts.sbom --check
+
+secret-scan:
+	python -m scripts.secret_scan --self-test
+	python -m scripts.secret_scan

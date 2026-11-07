@@ -1,2 +1,5 @@
-﻿Success: no issues found in 60 source files
+﻿command: python -m mypy healing
+
+Success: no issues found in 60 source files
+
 exit_code: 0

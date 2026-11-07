@@ -1,2 +1,5 @@
-﻿All checks passed!
+﻿command: python -m ruff check .
+
+All checks passed!
+
 exit_code: 0
