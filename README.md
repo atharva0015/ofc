@@ -86,6 +86,7 @@ The demo takes seconds.
 | `python tasks.py dashboard` | Local read-only dashboard (gates, records, metrics) at http://127.0.0.1:8080 |
 | `python tasks.py studio` | Modern Web UI for uploading, auto-healing, and optimizing any codebase at http://127.0.0.1:8081 |
 | `python tasks.py demo-ui` | Standalone NovaMart e-commerce storefront demo app at http://127.0.0.1:8082 |
+| `python tasks.py sbom` | SBOM generation plus fail-closed license allowlist check |
 
 ## Codebase Healing & Optimality Studio
 
@@ -156,8 +157,16 @@ Safety invariants:
   Prometheus/Grafana deployment have **not** been observed.
 - Live benches need Docker; when it is unavailable they are historical and
   must be labelled that way.
-- The project license is **TBD**; the package is not distributable until a
-  human chooses one.
+
+## License
+
+The project is released under the **MIT License** (`LICENSE`,
+`pyproject.toml`). Dependency licenses are checked fail-closed with
+`python -m scripts.sbom --check`; CI, `make sbom`, and `python tasks.py sbom`
+run the same check. The recorded MPL-2.0 / LGPL-3.0 / MIT-CMU exceptions and
+the remaining legal/vendor review are in
+[`docs/LICENSE_DECISION.md`](docs/LICENSE_DECISION.md) and
+[`docs/COMPLIANCE.md`](docs/COMPLIANCE.md).
 
 ## Repository map
 

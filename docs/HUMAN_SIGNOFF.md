@@ -21,7 +21,7 @@ either approval or a replacement value with rationale.
 ## Legal and compliance
 
 - [ ] Legal review of docs/COMPLIANCE.md (human: ______, date: ______)
-- [ ] LICENSE choice from docs/LICENSE_DECISION.md (human: ______, date: ______)
+- [ ] Human acknowledgment of the MIT decision in docs/LICENSE_DECISION.md (human: ______, date: ______)
 - [ ] Vendor register approval, DPAs, owners (human: ______, date: ______)
 
 ## Release

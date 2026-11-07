@@ -41,10 +41,19 @@ Run: `python -m scripts.retention` (dry-run) or `--apply` to delete.
 
 - `python -m scripts.sbom` writes `sbom.json` (name, version, license per
   installed distribution, stdlib only).
-- CI `compliance` job additionally runs `pip-licenses` when available and
-  fails on unknown/copyleft licenses outside the allowlist
-  (`MIT, Apache-2.0, BSD, ISC, PSF`).
+- `python -m scripts.sbom --check` fails closed on an unknown license or a
+  license outside the allowlist. The CI `compliance` job, `make sbom`, and
+  `python tasks.py sbom` run the check.
+- Allowlist: `MIT, MIT-0, MIT-CMU, Apache-2.0, BSD-2-Clause, BSD-3-Clause,
+  ISC, PSF-2.0, MPL-2.0, LGPL-3.0-only, LGPL-3.0-or-later`.
+- Recorded exceptions: PyGithub is LGPL-3.0; MPL-2.0 components stay
+  separate and unmodified; MIT-CMU is Pillow's permissive license and is not
+  a project runtime dependency. See `docs/LICENSE_DECISION.md`.
+- The project itself is MIT (`LICENSE`, `pyproject.toml`).
 - Healenium reuse: Apache-2.0, notices in `THIRD_PARTY_NOTICES.md` + `NOTICE`.
+- Local evidence: `reports/evidence/2026-11-07/sbom-check.txt` (61/61 in the
+  project venv) and `sbom-check-clean.txt` (56/56 in a clean venv). GitHub
+  Actions execution is still **UNVERIFIED** from this host.
 
 ## Vendor and subprocessor register (template — needs human review)
 

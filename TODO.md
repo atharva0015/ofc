@@ -1,17 +1,17 @@
 # TODO — feature inventory and open work
 
-Snapshot: 2026-11-04 · branch `chore/baseline` · after the evidence audit.
-Working tree contains the evidence, analysis, and wiring changes from this
-session; see `git log` for the exact commit.
+Snapshot: 2026-11-07 · branch `main` · after the v3 feature release and the
+evidence reconciliation. See `git log` for the exact commits and
+`reports/evidence/2026-11-07/` for the current transcripts.
 
 Legend: `[x]` completed and evidence-backed · `[~]` implemented but not fully
 verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **62 done · 33 partial · 20 open** (was 72 / 13 / 31 before the
-2026-11-04 audit; the P0 batch, P1.3, the demo tests, the quality snapshot,
-the dashboard, and the operator runbook closed items).
+At a glance: **67 done · 34 partial · 18 open** (was 62 / 33 / 20 after the
+2026-11-04 audit; the v3 Studio/storefront/whitebook items, MIT license, and
+the SBOM enforcement are reflected).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -250,22 +250,24 @@ the dashboard, and the operator runbook closed items).
   Strictly decoupled from the main healing engine; provides live e-commerce workflows
   (tax computation, promotions, loyalty tiering, invoice generation) exhibiting realistic bugs.
   Evidence: `tests/test_codebase_app.py`, `tests/test_bench_wiring.py`.
-- [x] **Academic Whitebook Documentation** (`docs/WHITEBOOK_PART1.md`, `docs/WHITEBOOK_PART2.md`) —
+- [~] **Academic Whitebook Documentation** (`docs/WHITEBOOK_PART1.md`, `docs/WHITEBOOK_PART2.md`) —
   comprehensive 93-page B.E. Computer Engineering project whitebook in GitHub Flavored
   Markdown, split into two appendable parts with full literature reviews, UML/DFD models,
   mathematical formulas, algorithms 3.1–3.9, and complete IEEE references [1]–[51].
+  The two files are the artifact, but documentation alone is not an executable
+  check, so this stays partial under the audit rule.
 
-### 1.10 Tests and documentation
+### 1.11 Tests and documentation
 
-- [x] **204 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **222 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
-  held-out set, gates, dashboard, runbook, and metrics (**MEASURED
-  2026-11-06**). Evidence: the suite itself;
-  `reports/evidence/2026-11-06/pytest.txt` (204 passed, exit 0).
+  held-out set, gates, dashboard, runbook, metrics, codebase healing,
+  storefront, and SBOM checks (**MEASURED 2026-11-07**). Evidence: the suite
+  itself; `reports/evidence/2026-11-07/pytest.txt` (222 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
-### 1.11 Quality evidence snapshot (2026-11-05)
+### 1.12 Quality evidence snapshot (2026-11-05)
 
 `scripts/evidence_snapshot.py` (tested by `tests/test_evidence_snapshot.py`)
 writes one reproducible in-process transcript. Artifacts:
@@ -322,8 +324,10 @@ Docker, or real GitHub credentials are involved.
 - [~] **CI verification** — workflows authored; GitHub Actions results were
   never observed from this machine. The local `gates` run now passes
   (11/0/1), but real CI remains unobserved.
-- [~] **Compliance tooling** — SBOM, retention, masking, and audit exist, but
-  the SBOM license allowlist is unused and no CI step enforces it.
+- [~] **Compliance tooling** — SBOM, retention, masking, and audit exist; the
+  SBOM license check is wired into CI/Make/tasks and passes locally (61/61 in
+  the project venv, 56/56 in a clean venv). GitHub Actions execution is still
+  unobserved, and legal/vendor review remains a human task.
 - [~] **Vision/LLM extension** — code and benchmark complete; verdict is DROP
   because there are no real screenshots and attempts 1–2 already win.
 - [~] **Documentation surface** — docs are extensive and `README.md` now has
@@ -411,7 +415,7 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   available** — otherwise present the 2026-10-08 results explicitly as
   historical/UNVERIFIED, not as fresh measurements. **M**.
 
-### P1 — before merge to main (14 open, 4 done)
+### P1 - before merge to main (12 open, 6 done)
 
 - [x] **P1.1 Resolve `false_heal_rate_adversarial`** — human-approved
   2026-11-06: gate the shipped orchestrator path from `e2e_live.json`
@@ -459,14 +463,21 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   schedule, and the unverified external integrations. Evidence:
   `tests/test_operator_runbook.py`; `reports/evidence/2026-11-06/runbook.txt`.
   **M**.
-- [ ] **P1.12 Enforce the SBOM license allowlist in CI** — `scripts/sbom.py`
-  defines it but never checks it; add `pip-licenses` or equivalent. **S**.
+- [x] **P1.12 Enforce the SBOM license allowlist in CI** - `scripts/sbom.py
+  --check` fails closed; CI, `make sbom`, and `python tasks.py sbom` run it.
+  Evidence: `tests/test_sbom.py`; `reports/evidence/2026-11-07/sbom-check.txt`
+  (61/61, exit 0) and `sbom-check-clean.txt` (56/56, exit 0). GitHub Actions
+  execution is unobserved (P1.7). **S**.
 - [ ] **P1.13 Replace the grep-based secret scan** with gitleaks/trufflehog if
   the project will be distributed. **S**.
 - [ ] **P1.14 Activate the survival gate or record a formal deferral** once 30
   days of heal history exists (today it reports `insufficient_data`). **S**.
-- [ ] **P1.15 Choose the project license** — MIT recommended; update `LICENSE`
-  and `pyproject.toml` (`license = "TBD"` today). **Human decision. S**.
+- [x] **P1.15 Choose the project license** - MIT recorded and applied
+  (`LICENSE`, `pyproject.toml`, `docs/LICENSE_DECISION.md`); the allowlist
+  documents the MPL-2.0, LGPL-3.0, and MIT-CMU exceptions. Evidence:
+  `tests/test_sbom.py::test_project_metadata_is_mit`;
+  `reports/evidence/2026-11-07/pytest.txt`. Legal/vendor review remains
+  P1.16. **Human decision. S**.
 - [ ] **P1.16 Complete legal review and the vendor/subprocessor register** —
   data handling, DPAs, regions/owners for GitHub, Docker Hub, PyPI, Slack,
   Teams, Jira, and the self-hosted stack. **Human decision. M**.

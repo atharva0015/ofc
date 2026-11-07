@@ -18,8 +18,10 @@ alert / shadow PR, with an API sidecar, a read-only local dashboard, the Codebas
 Healing & Optimality Studio Web UI, an independent demo e-commerce storefront, and
 quality tooling. **MEASURED this session (2026-11-07, Python 3.12.10):
 222 tests pass; ruff check and ruff format are clean; mypy reports 0 issues in
-60 source files; the 24-case demo matches 24/24; gates report 11 PASS, 0 FAIL,
-1 UNVERIFIED (normal mode exit 0; strict mode exit 1 on the survival gate).**
+60 source files; 193 files are already formatted; the 24-case demo matches
+24/24; gates report 11 PASS, 0 FAIL, 1 UNVERIFIED (normal mode exit 0; strict
+mode exit 1 on the survival gate); and the SBOM/license check passes in both
+the project venv (61/61) and a clean venv (56/56).**
 The 2026-11-06 measurement correction was explicitly approved by the project owner:
 the adversarial gate now measures the shipped orchestrator path (0.0, all 9 cases escalate),
 and the latency gate measures pipeline overhead (19.99 ms). The raw matcher's 9/9
@@ -44,9 +46,9 @@ adversarial heals and the 1122 ms browser time remain visible as non-gating diag
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 222 passed in 106.17 s |
+| `pytest -q` | 222 passed in 97.67 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 192 files already formatted |
+| `ruff format --check .` | 193 files already formatted |
 | `mypy healing` | no issues in 60 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.bench_demo_cases` | 24/24, 0 false heals, 0 wrong escalations |
@@ -55,6 +57,7 @@ adversarial heals and the 1122 ms browser time remain visible as non-gating diag
 | `python tasks.py studio` | Codebase Healing Studio on port 8081, HTTP 200 |
 | `python tasks.py demo-ui` | Demo E-Commerce Storefront on port 8082, HTTP 200 |
 | `python -m scripts.bench_golden_live` | 24 cases, heal_accuracy 1.0 |
+| `python -m scripts.sbom --check` | 61/61 allowed in the project venv; 56/56 in a clean venv, exit 0 |
 | `python -m scripts.check_gates` | 11 PASS / 0 FAIL / 1 UNVERIFIED, exit 0 |
 | `python -m scripts.check_gates --strict` | same gate counts, exit 1 on the UNVERIFIED survival gate |
 
@@ -167,15 +170,18 @@ is disabled by default.
 - The `gates` CI job now passes locally (11/0/1, exit 0), but the real
   GitHub Actions run is still unobserved. The strict release check exits 1
   until the survival gate has history or a written deferral.
-- The `compliance` job currently runs SBOM generation and a retention
-  dry-run only. `scripts/sbom.py` defines a license allowlist but never
-  checks it; docs claim license enforcement that the workflow does not
-  perform.
+- The `compliance` job runs `python -m scripts.sbom --check` and a retention
+  dry-run. The same fail-closed check is available through `make sbom` and
+  `python tasks.py sbom`. Local evidence: 61/61 allowed in the project venv
+  and 56/56 in a clean venv; GitHub Actions execution is unobserved.
+- **LICENSE is MIT** (`LICENSE`, `pyproject.toml`, `docs/LICENSE_DECISION.md`).
+  The SBOM allowlist records the approved MPL-2.0, LGPL-3.0 (PyGithub), and
+  MIT-CMU (Pillow, local tooling only) exceptions.
 - Apache-2.0 notices for Healenium reuse are present (`NOTICE`,
-  `THIRD_PARTY_NOTICES.md`); SBOM is committed.
-- **LICENSE is still a placeholder**, `pyproject.toml` says `TBD`, the
-  vendor register is blank, legal review is outstanding, and all 12
-  target sign-offs and release boxes in `docs/HUMAN_SIGNOFF.md` are
+  `THIRD_PARTY_NOTICES.md`); SBOM generation is available and `sbom.json` is
+  gitignored as a generated artifact.
+- The vendor register is still blank, legal review is outstanding, and all
+  12 target sign-offs and release boxes in `docs/HUMAN_SIGNOFF.md` are
   unchecked.
 
 ## Open gates and risks
@@ -215,16 +221,25 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
+- **2026-11-07:** added the Codebase Healing & Optimality Studio, the
+  NovaMart demo storefront, and the two-part academic whitebook. Switched the
+  project license to MIT, added fail-closed SBOM/license checking, and wired
+  it into CI, `make sbom`, and `python tasks.py sbom`. Re-verified 222 tests,
+  193 formatted files, mypy on 60 source files, Studio/storefront HTTP 200,
+  gates 11/0/1, and SBOM 61/61 (project venv) / 56/56 (clean venv). Evidence:
+  `reports/evidence/2026-11-07/`.
 - **2026-11-06:** project owner approved the gate measurement correction:
   adversarial FHR gates the orchestrator path (0.0), latency gates pipeline
   overhead (19.99 ms), and the raw matcher/browser numbers remain
   diagnostics. Gates are now **11 PASS / 0 FAIL / 1 UNVERIFIED**; normal
   mode exits 0 and strict mode exits 1 on the survival UNVERIFIED.
-- Tests: 166 → **204 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → 204 (2026-11-06) → **222 passed** (2026-11-07);
+  lint/mypy re-verified on Python 3.12.10.
 - Onboarding: `tasks.py` now runs pytest, ruff, and mypy through
   `sys.executable`, so a fresh venv cannot silently fall back to a PATH
   interpreter. A clean temp venv installed with `pip install -e ".[dev]"`,
-  passed 204 tests, ran the 24-case demo, and served the dashboard.
+  passed 204 tests (222 on the 2026-11-07 rerun), ran the 24-case demo, and
+  served the dashboard.
 - Dashboard: added a GET-only local page for gates, recent explanation
   records, and the latest saved metrics snapshot. Records are
   hash-checked, PII-masked, and HTML-escaped; there is no authentication,

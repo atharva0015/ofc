@@ -492,10 +492,11 @@ real defect."
 | `healing/nonui/` | Handles API/schema failures |
 | `healing/quality/` | Metrics, gates, calibration, observability |
 | `healing/dashboard/` | Read-only local dashboard |
+| `healing/codebase/` | Upload-and-heal Studio for arbitrary Python code |
 | `healing/adapters/` | Planned real runner input (currently a placeholder) |
 | `healing/security/` | Masking, audit log, retention |
 | `benchmark/` | Test cases and saved benchmark reports |
-| `demo_app/` | A small FastAPI app with UI and API drift modes |
+| `demo_app/` | NovaMart storefront plus UI and API drift modes |
 | `scripts/` | Commands for benchmarks, gates, demo, replay, retention |
 | `tests/` | The pytest test suite |
 | `docs/` | Architecture, targets, evidence, decisions, runbook |
@@ -531,6 +532,48 @@ It is GET-only, binds to localhost, masks personal data, escapes displayed
 text, and hash-checks the records. It has no login, so it must not be exposed
 to the internet.
 
+### The Codebase Healing & Optimality Studio
+
+The Studio is a separate local web app on port 8081. Think of it as a repair
+shop for a Python codebase:
+
+1. You upload a zip of a project, or pick one of the built-in samples.
+2. The Studio scans the code and lists likely bugs and slow patterns.
+3. You click heal or optimize.
+4. It applies the change, runs the project's tests when it can find them,
+   and shows a before/after diff.
+5. You download the changed project as a zip.
+
+It looks for common bugs such as division by zero, mutable default
+arguments, files that are never closed, and misspelled names. It also tries
+safe speed-ups: replacing a linear search with a set lookup, caching repeated
+recursive work, and joining strings in a list instead of concatenating in a
+loop.
+
+An optional local LLM can suggest changes, but a deterministic rule-based
+path is always available. The Studio is a **local demo**, not a real security
+sandbox: it runs the uploaded project's tests on this machine, binds to
+localhost, and has no login. Do not expose port 8081 to the internet.
+
+### The NovaMart demo storefront
+
+NovaMart is a separate fake shop on port 8082. It is deliberately decoupled
+from the healing engine. It has realistic business logic for tax, promotions,
+loyalty tiers, and invoices, plus seeded bugs that make it a useful test
+subject.
+
+The storefront is a **demo**, not a production commerce system. Its purpose
+is to give the healing pipeline realistic behaviour to observe and to show
+the end-user workflow without needing a live customer site.
+
+### The academic whitebook
+
+`docs/WHITEBOOK_PART1.md` and `docs/WHITEBOOK_PART2.md` contain a long-form
+academic write-up: literature review, architecture, UML/DFD models,
+algorithms, test cases, results, and references. It is documentation, not an
+executable check, so the project treats it as a partial item under the
+audit rule.
+
 ---
 
 ## 8. What is already built
@@ -563,9 +606,9 @@ The core reference MVP is largely complete:
 
 The project backlog currently tracks:
 
-- **60 done**
-- **33 partial**
-- **22 open**
+- **67 done**
+- **34 partial**
+- **18 open**
 
 "Partial" means the feature exists, but it is missing a live, external, or
 executable proof. It is not the same as "not built."
@@ -586,11 +629,15 @@ look real even when it is simulated.
 
 ### What is measured now
 
-- The 204-test suite.
+- The **222-test suite** (2026-11-07).
 - The 24-case demo.
 - The in-process benchmarks.
-- The quality gates.
+- The quality gates: 11 PASS / 0 FAIL / 1 UNVERIFIED.
 - The read-only dashboard.
+- The Codebase Healing Studio and the NovaMart storefront (HTTP 200 on
+  localhost).
+- The SBOM/license check: 61/61 allowed in the project venv, 56/56 in a
+  clean venv.
 - The fresh-venv quickstart.
 
 ### What is measured but historical
@@ -674,10 +721,11 @@ The raw numbers remain in the reports and on the dashboard's
   have been captured.
 - **Prometheus/Grafana is not deployed.** The project exports metric samples
   in-process, but there is no running scrape or dashboard.
-- **The project license is TBD.** The package is not distributable until a
-  human chooses a license.
-- **The SBOM license allowlist is not enforced.** `scripts/sbom.py` defines
-  an allowlist, but no CI step checks it.
+- **The project is MIT, but legal review is not done.** The license is
+  recorded and the SBOM allowlist is enforced; vendor DPAs and a human legal
+  review remain.
+- **The SBOM check is wired into CI, but GitHub Actions is unobserved.** The
+  local check passes; a real CI run still needs to be recorded.
 - **The secret scan is still grep-based.** It should be replaced before
   distribution.
 - **The survival gate has no history.** It reports `insufficient_data` until
@@ -711,7 +759,7 @@ python3.12 -m venv .venv312
 .venv312\Scripts\python tasks.py test
 ```
 
-Expected result: **204 passed**.
+Expected result: **222 passed**.
 
 ### Run the presentation demo
 
@@ -867,6 +915,9 @@ The backlog has three priority levels.
 
 ### P1 - before merge and release
 
+Completed 2026-11-07: the project license is MIT, and the SBOM/license check
+is enforced by CI, `make sbom`, and `python tasks.py sbom`.
+
 - Activate the survival gate or record a formal deferral.
 - Fix the `token-cart` observer gap.
 - Exercise live attempts 2-4.
@@ -875,10 +926,7 @@ The backlog has three priority levels.
 - Install the real GitHub App and open one heal PR and one revert PR.
 - Smoke-test real Slack/Teams/Jira delivery.
 - Close the missing test/artifact debt.
-- Enforce the SBOM license allowlist in CI.
 - Replace the grep-based secret scan.
-- Activate the survival gate or record a formal deferral.
-- Choose the project license.
 - Complete legal review and the vendor/subprocessor register.
 - Approve the 12 quality targets.
 - Confirm release blockers and cut the next tag.
@@ -930,7 +978,7 @@ That is why some numbers are labelled historical, why one gate is still
 UNVERIFIED, and why some features are marked partial. The goal is not to look
 finished. The goal is to be trustworthy.
 
-No sign-off box in `docs/HUMAN_SIGNOFF.md` has been ticked. Decisions about
-the project license, legal review, target approvals, and survival-gate
-activation are reserved for a human. The 2026-11-06 gate measurement
+No sign-off box in `docs/HUMAN_SIGNOFF.md` has been ticked. The MIT license
+decision is recorded, but legal review, target approvals, and survival-gate
+activation are still reserved for a human. The 2026-11-06 gate measurement
 correction was explicitly approved by the project owner.

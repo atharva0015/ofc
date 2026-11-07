@@ -209,6 +209,7 @@ path this retention job scans.
 .venv312/Scripts/python -m mypy healing
 .venv312/Scripts/python -m scripts.check_gates
 .venv312/Scripts/python -m scripts.check_gates --strict
+.venv312/Scripts/python -m scripts.sbom --check
 .venv312/Scripts/python -m scripts.evidence_snapshot
 ```
 
@@ -230,8 +231,10 @@ survival history cannot pass as green.
 - `scripts/rollback_heal.py` is a dry run, not a live revert.
 - The dashboard is local-only, unauthenticated, and reads saved metrics; it
   is not Prometheus/Grafana.
-- The SBOM license allowlist is not enforced in CI (TODO P1.12), and the
-  project license is still TBD.
+- The SBOM license allowlist is enforced by `python -m scripts.sbom --check`
+  locally, in CI, and through `make sbom` / `python tasks.py sbom`. The
+  project is MIT. GitHub Actions execution is still unobserved here, so the
+  CI half is **UNVERIFIED** until a real run is recorded.
 - Retention is irreversible after `--apply`.
 
 Stop and ask a human owner if any of these are true: a record hash mismatch,

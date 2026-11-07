@@ -1,31 +1,76 @@
-# License decision (no license specified anywhere — LICENSE left untouched)
+# License decision: MIT
 
-Evidence: `LICENSE` is a placeholder TODO, `pyproject.toml` declares
-`license = { text = "TBD" }`, and no ADR or doc names a project license.
-Per instruction, this file lists options instead of choosing. A human owner
-must decide; swapping the text into `LICENSE` + `pyproject.toml` is a
-one-commit follow-up.
+**Status:** decided and applied (2026-11-07). This file records the decision;
+it is not legal advice. A qualified human must still complete the legal and
+vendor review in `docs/HUMAN_SIGNOFF.md` before production use.
 
-## Constraints from the repo (MEASURED, from files on disk)
+## Decision
 
-- Healenium is reused under **Apache-2.0** (`THIRD_PARTY_NOTICES.md`,
-  `NOTICE`, ADR-005). Any choice must be Apache-2.0-compatible.
-- Selenium Grid images are Apache-2.0. No GPL/copyleft dependencies are
-  vendored; the SBOM license scan enforces an allowlist
-  (`MIT, Apache-2.0, BSD, ISC, PSF`).
-- The project aspires to commercial SaaS use (alerting, GitHub App
-  delivery), so copyleft licenses would endanger adoption.
+The project is released under the **MIT License**.
 
-## Options
+- `LICENSE` contains the full MIT text.
+- `pyproject.toml` declares `license = { text = "MIT" }`.
+- The project owner approved MIT as the project license.
 
-| License | Fits constraints | Notes for the decider |
-|---|---|---|
-| **MIT** (recommended) | Yes | Shortest, most permissive; pairs cleanly with Apache-2.0 Healenium reuse; standard for test tooling |
-| **Apache-2.0** | Yes | Matches Healenium exactly; adds explicit patent grant; slightly longer text |
-| **BSD-3-Clause** | Yes | Equivalent permissiveness; less common for new Python projects |
-| ~~GPL/AGPL~~ | No | Rejected: copyleft conflicts with SaaS use and the SBOM allowlist |
+MIT was chosen because it is short, permissive, compatible with the
+Apache-2.0 Healenium reuse, and suitable for a project that may be offered as
+a commercial service. It does not impose copyleft obligations on users of the
+healing framework.
 
-## What the decision unlocks
+## Dependency license policy
 
-Until a human picks: `LICENSE` stays a placeholder, `pyproject.toml`
-stays `TBD`, and the package is undistributable. Nothing else is blocked.
+The project does not relicense its dependencies. `scripts/sbom.py` builds an
+SBOM and checks every installed distribution against an allowlist:
+
+- MIT, MIT-0, MIT-CMU
+- Apache-2.0
+- BSD-2-Clause, BSD-3-Clause
+- ISC
+- PSF-2.0
+- MPL-2.0
+- LGPL-3.0-only, LGPL-3.0-or-later
+
+Run the fail-closed check with:
+
+```powershell
+python -m scripts.sbom --check
+```
+
+CI, `make sbom`, and `python tasks.py sbom` run the same command. Unknown
+licenses and licenses outside the allowlist fail the check.
+
+### Recorded exceptions
+
+- **PyGithub (LGPL-3.0)** is kept as a development dependency for the GitOps
+  client. It is not linked into the runtime package. If it is distributed,
+  keep the LGPL notice and the ability to replace the library.
+- **MPL-2.0** components are allowed only as separate, unmodified
+  dependencies; file-level copyleft obligations stay with those files.
+- **MIT-CMU** is the permissive CMU/MIT-style license used by Pillow. Pillow
+  is not a project runtime dependency, but it can appear in developer
+  environments through optional presentation tooling. Allowing it does not
+  change the project's MIT terms.
+
+The allowlist and exceptions were approved by the project owner on
+2026-11-06 and extended with MIT-CMU on 2026-11-07.
+
+## What this does and does not decide
+
+This decides the **project's outbound license** and the **dependency license
+allowlist**. It does not:
+
+- approve a vendor, subprocessor, DPA, or data region (see
+  `docs/COMPLIANCE.md` and P1.16);
+- replace a human legal review;
+- tick any box in `docs/HUMAN_SIGNOFF.md`;
+- authorize a release or tag.
+
+## Evidence
+
+- `tests/test_sbom.py` — MIT metadata, normalization, OR/AND rules, and
+  fail-closed `--check`.
+- `reports/evidence/2026-11-07/sbom-check.txt` — 61/61 components allowed in
+  the project venv, exit 0.
+- `reports/evidence/2026-11-07/sbom-check-clean.txt` — 56/56 components
+  allowed in a clean `pip install -e ".[dev]"` venv, exit 0.
+- `reports/evidence/2026-11-07/pytest.txt` — full suite green.

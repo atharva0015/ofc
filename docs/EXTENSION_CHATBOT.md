@@ -13,8 +13,9 @@ deferral so the option stays visible and reviewable. Status: **DEFERRED**.
   risk without new healing power.
 - **Review workload evidence.** The current backlog is human sign-offs, not
   information access: TARGETS.md targets unapproved, GATE_REVIEW checklist
-  unchecked, COMPLIANCE vendor register blank, LICENSE undecided. A
-  chatbot answers questions; the bottleneck is decisions. Adding it now
+  unchecked, COMPLIANCE vendor register blank, legal/vendor review
+  outstanding (MIT is recorded). A chatbot answers questions; the bottleneck
+  is decisions. Adding it now
   would widen the review surface while the existing queue is unaudited.
 
 ## Red-team plan (for the revisit, not executed)

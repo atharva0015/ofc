@@ -1,4 +1,4 @@
-# Evidence index (2026-11-04, refreshed 2026-11-06)
+# Evidence index (2026-11-04, refreshed 2026-11-07)
 
 Every headline claim in `PROJECT_STATUS.md` with its exact command, output
 artifact, date, provenance label, and the result of re-running it on
@@ -8,10 +8,11 @@ in-process replay), **UNVERIFIED** (not observed / input missing).
 Environment: Windows host, `.venv312` (Python 3.12.10), `make` absent.
 Commands shown as `python` were run as
 `.venv312/Scripts/python.exe -m ...`; the full invocation is recorded at the
-top of each log under `reports/evidence/2026-11-04/` or
-`reports/evidence/2026-11-05/` or `reports/evidence/2026-11-06/`. Docker was **not
-running** (`npipe:////./pipe/dockerDesktopLinuxEngine` unavailable), so
-live-stack commands could not be repeated.
+top of each log under `reports/evidence/2026-11-04/`,
+`reports/evidence/2026-11-05/`, `reports/evidence/2026-11-06/`, or
+`reports/evidence/2026-11-07/`. Docker was **not running**
+(`npipe:////./pipe/dockerDesktopLinuxEngine` unavailable), so live-stack
+commands could not be repeated.
 
 ## Artifact durability
 
@@ -23,9 +24,9 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 ## Headline claims
 
-| # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05/06 |
+| # | Claim | Exact command | Output artifact | Date | Label | Latest re-run |
 |---|---|---|---|---|---|---|
-| 1 | 204 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 204 passed in 24.96 s (count same; runtime varies) |
+| 1 | 222 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-07/pytest.txt` | 2026-11-07 | MEASURED | **MATCH** — 222 passed in 97.67 s (1 warning), exit 0 |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
@@ -128,6 +129,35 @@ mode exit 1 on the survival UNVERIFIED).
 
 The install/test/dashboard checks are **MEASURED**; the demo remains
 **SIMULATED/IN-PROCESS**. No Docker, browser, or external service was used.
+
+## Codebase Studio, storefront, SBOM, and 2026-11-07 verification
+
+All commands were run from the repo root with
+`.venv312/Scripts/python.exe` (Python 3.12.10) on 2026-11-07. Each artifact
+starts with the exact command and ends with the exit code.
+
+| Check | Exact command | Artifact | Result |
+|---|---|---|---|
+| Full suite | `python -m pytest -q` | `reports/evidence/2026-11-07/pytest.txt` | **222 passed**, 1 warning, 97.67 s, exit 0 |
+| Ruff check | `python -m ruff check .` | `ruff-check.txt` | clean, exit 0 |
+| Ruff format | `python -m ruff format --check .` | `ruff-format.txt` | 193 files already formatted, exit 0 |
+| Types | `python -m mypy healing` | `mypy.txt` | no issues in 60 source files, exit 0 |
+| Gates | `python -m scripts.check_gates` | `gates.txt` | **11 PASS / 0 FAIL / 1 UNVERIFIED**, exit 0 |
+| Strict gates | `python -m scripts.check_gates --strict` | `gates-strict.txt` | 11/0/1, `result: FAIL (0 failing, 1 unverified in strict mode)`, exit 1 (expected) |
+| Presentation demo | `python tasks.py demo` | `demo.txt` | 24 rows, both XAI records, exit 0 (**SIMULATED**) |
+| Demo-case bench | `python -m scripts.bench_demo_cases` | `bench-demo-cases.txt` | 24 cases, 0 false heals, 0 wrong escalations, exit 0 (**SIMULATED**) |
+| Golden live adapter | `python -m scripts.bench_golden_live` | `bench-golden-live.txt` | 24 cases, `heal_accuracy=1.0`, `escaped=0` (**DERIVED** from 2026-10-08 live) |
+| Studio HTTP | start `python -m healing.codebase.app`; `GET http://127.0.0.1:8081/` | `studio-http.txt` | **HTTP 200**, 60,621 bytes, title “Autonomous Codebase Healing & Optimality Studio” |
+| Storefront HTTP | start `python -m demo_app.app`; `GET http://127.0.0.1:8082/` | `storefront-http.txt` | **HTTP 200**, 17,519 bytes, title “NovaMart - Demo E-Commerce & Order Analytics” |
+| SBOM (project venv) | `python -m scripts.sbom --check` | `sbom-check.txt` | 61/61 allowed, 0 disallowed, `result: PASS`, exit 0 |
+| SBOM (clean venv) | same command in a fresh `pip install -e ".[dev]"` venv | `sbom-check-clean.txt` | 56/56 allowed, 0 disallowed, `result: PASS`, exit 0 |
+| Quality snapshot | `python tasks.py evidence-snapshot` | `evidence-snapshot.txt`, `quality_snapshot.json` | exit 0; masking, narrative, calibration, autonomy, metrics, survival status |
+
+The Studio/storefront rows prove the local server starts and returns HTTP 200;
+the interactive flows are covered by `tests/test_codebase_app.py` and
+`tests/test_codebase_healing.py`. They do **not** prove a containerized or
+network-isolated sandbox. GitHub Actions was not observed from this host, so
+the CI wiring remains **UNVERIFIED** until a real run is recorded.
 
 ## Operator runbook (2026-11-06)
 
@@ -233,7 +263,7 @@ fails the suite).
 
 **No differences.** The two gaps flagged in the earlier audit are closed:
 the held-out case files are now frozen and hash-checked, and the freeze
-record's test count is refreshed to 204.
+record's test count is refreshed to 222.
 
 ## Claims with no reproducible command
 
@@ -251,5 +281,6 @@ measured:
 - Real GitHub App PR/revert, real Slack/Teams/Jira delivery, real screenshot
   capture, and Prometheus/Grafana deployment — no command or artifact
   exists; these are roadmap items, not measured claims.
-- Human sign-offs and license/DPA decisions — human decisions, not
-  commands; all boxes in `docs/HUMAN_SIGNOFF.md` remain unchecked.
+- Human sign-offs, legal/vendor review, and DPA decisions — human decisions,
+  not commands; all boxes in `docs/HUMAN_SIGNOFF.md` remain unchecked. MIT
+  itself is recorded in `docs/LICENSE_DECISION.md`.
