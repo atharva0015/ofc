@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard studio demo-ui
 
 test:
 	pytest -q
@@ -65,3 +65,6 @@ dashboard:
 
 studio:
 	python -m healing.codebase.app
+
+demo-ui:
+	python -m demo_app.app

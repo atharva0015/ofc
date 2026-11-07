@@ -233,6 +233,28 @@ the dashboard, and the operator runbook closed items).
   (11 PASS / 0 FAIL / 1 UNVERIFIED plus two diagnostics; 25 of 7996
   records).
 
+### 1.10 Codebase Healing Studio, Demo Storefront, and Academic Whitebook
+
+- [x] **Codebase Healing & Optimality Engine** (`healing/codebase/`) — autonomous
+  AST bug repair (zero division, mutable defaults, unclosed files, name errors),
+  algorithmic complexity optimizer ($O(N^2) \rightarrow O(1)$ hash sets, memoization,
+  loop buffer joins), sandbox verification, and Explainable AI (XAI) unified diffs.
+  Evidence: `tests/test_codebase_healing.py`, `tests/test_codebase_app.py` (12 passing tests).
+- [x] **Interactive 3-Stage Studio Web UI** (`healing/codebase/studio.html`) — modern
+  FastAPI studio on `http://localhost:8081` (`tasks.py studio`). Features a 3-page
+  wizard (Upload/Presets with 5.2s animated radar scanner modal -> Detect & Remediate ->
+  XAI Audit & Unified Diff) and Dark/Light theme toggle with localStorage persistence.
+  Evidence: `tests/test_codebase_app.py`.
+- [x] **Standalone NovaMart Demo Storefront** (`demo_app/app.py`, `demo_app/storefront.html`) —
+  independent e-commerce application on `http://localhost:8082` (`tasks.py demo-ui`).
+  Strictly decoupled from the main healing engine; provides live e-commerce workflows
+  (tax computation, promotions, loyalty tiering, invoice generation) exhibiting realistic bugs.
+  Evidence: `tests/test_codebase_app.py`, `tests/test_bench_wiring.py`.
+- [x] **Academic Whitebook Documentation** (`docs/WHITEBOOK_PART1.md`, `docs/WHITEBOOK_PART2.md`) —
+  comprehensive 93-page B.E. Computer Engineering project whitebook in GitHub Flavored
+  Markdown, split into two appendable parts with full literature reviews, UML/DFD models,
+  mathematical formulas, algorithms 3.1–3.9, and complete IEEE references [1]–[51].
+
 ### 1.10 Tests and documentation
 
 - [x] **204 tests passing** on Python 3.12.10, including classifier, matcher,

@@ -555,9 +555,11 @@ The core reference MVP is largely complete:
 - **Benchmarks and demo:** 24 UI cases, 24 demo cases, 7 API cases, 35
   held-out cases, shadow report, vision benchmark, Healenium simulator,
   historical live reports, one-command demo.
-- **Dashboard:** read-only operator dashboard.
-- **Tests and docs:** 204 passing tests, clean lint/type checks, README,
-  operator runbook, evidence index, architecture docs.
+- **Dashboard:** read-only operator dashboard on port 8080.
+- **Codebase Healing & Optimality Studio:** modern Web UI on port 8081 (`tasks.py studio`) with a 3-stage interactive wizard (1. Codebase zip upload or sample selection with 5.2s animated radar scanner modal -> 2. Defect and performance bottleneck classification -> 3. Explainable AI audit breakdown with syntax-highlighted diffs and one-click zip export), Dark/Light theme toggle, AST bug repair engine, and algorithmic complexity optimizer ($O(N^2) \rightarrow O(1)$, dynamic programming memoization, loop buffer joins).
+- **Standalone Demo Storefront:** independent NovaMart e-commerce app on port 8082 (`tasks.py demo-ui`) with live business logic and seeded defect injection.
+- **Academic Whitebook:** complete 93-page B.E. Computer Engineering project whitebook in `docs/WHITEBOOK_PART1.md` and `docs/WHITEBOOK_PART2.md`.
+- **Tests and docs:** 222 passing tests, clean lint/type checks across 60 source files, README, operator runbook, evidence index, architecture docs.
 
 The project backlog currently tracks:
 
@@ -623,8 +625,8 @@ path, not as proof of live browser or production behavior.
 
 ### Test and gate status
 
-- **204 tests passed** on Python 3.12.10.
-- Lint and type checks are clean.
+- **222 tests passed** on Python 3.12.10.
+- Lint and type checks are clean (0 issues in 60 source files).
 - The fresh-venv quickstart was verified.
 - Quality gates: **11 PASS / 0 FAIL / 1 UNVERIFIED**.
 - `tasks.py gates` exits with code 0. `tasks.py gates-strict` exits with code
@@ -756,6 +758,9 @@ so do not expose it to the internet.
 
 | Command | What it does |
 |---|---|
+| `python tasks.py studio` | Modern Web UI for uploading, auto-healing, and optimizing any codebase at http://127.0.0.1:8081 |
+| `python tasks.py demo-ui` | Standalone NovaMart e-commerce storefront demo app at http://127.0.0.1:8082 |
+| `python tasks.py dashboard` | Read-only operator dashboard (quality gates, metrics, records) at http://127.0.0.1:8080 |
 | `python tasks.py lint` | Run ruff and mypy |
 | `python tasks.py gates-strict` | Quality gates; UNVERIFIED also fails |
 | `python tasks.py bench` | Baseline benchmark and Critic verify |

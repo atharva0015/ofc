@@ -85,15 +85,23 @@ The demo takes seconds.
 | `python tasks.py evidence-snapshot` | Deterministic quality transcript (masking, narrative, calibration, guard, GitOps) |
 | `python tasks.py dashboard` | Local read-only dashboard (gates, records, metrics) at http://127.0.0.1:8080 |
 | `python tasks.py studio` | Modern Web UI for uploading, auto-healing, and optimizing any codebase at http://127.0.0.1:8081 |
+| `python tasks.py demo-ui` | Standalone NovaMart e-commerce storefront demo app at http://127.0.0.1:8082 |
 
 ## Codebase Healing & Optimality Studio
 
 `python tasks.py studio` serves the interactive modern Web Studio at <http://127.0.0.1:8081>.
 It enables developers and QA engineers to:
-- **Upload any codebase** as a `.zip` file or run instant one-click analysis using the built-in demo project.
-- **Autonomous Bug Healing**: Scans for syntax errors, runtime crashes, mutable default parameters, unclosed file descriptors, and failing tests. It synthesizes optimal patches (using local free LLMs via Ollama or deterministic rule-based AST synthesis), verifies them in an isolated sandbox, and presents interactive unified split diffs.
-- **Code Optimality Engine**: Detects algorithmic complexity bottlenecks ($O(N^2) \rightarrow O(N)$), linear collection searches, string concatenation in loops, and unmemoized recursion; measures before/after execution speedups; and enforces strict Critic regression guards.
-- **Download Optimized Codebase**: One-click export of the clean, repaired, and benchmark-optimized codebase as a `.zip` archive.
+- **3-Page Interactive Wizard**:
+  - **Stage 1 (Upload & Ingest)**: Upload any arbitrary codebase `.zip` archive or load built-in sample presets; triggers an animated 5.2-second high-tech radar scanner modal with live diagnostics before transitioning.
+  - **Stage 2 (Detect & Remediate)**: Autonomous detection and classification of bugs, code smells, and algorithmic bottlenecks ($O(N^2) \rightarrow O(1)$ hash sets, recursion memoization). Allows one-click defect auto-healing and performance optimization.
+  - **Stage 3 (XAI Audit & Diff)**: Full Explainable AI (XAI) breakdown per patch (Root Cause Analysis, Remediation Logic, Safety Invariants), interactive syntax-highlighted unified diffs, and instant `.zip` export of the healed project.
+- **Theme Support**: Seamless Dark and Light theme toggle with `localStorage` persistence.
+- **Autonomous Bug Healing**: Scans for syntax errors, runtime crashes, mutable default parameters, unclosed file descriptors, and failing tests. Synthesizes optimal patches using local free LLMs (via Ollama / LocalAI) or deterministic AST synthesis with sandbox verification.
+- **Code Optimality Engine**: Refactors linear searches in loops to $O(1)$ set lookups, replaces unmemoized exponential recursion with dynamic programming caches, and converts string concatenation in loops into buffer joins.
+
+## Standalone Demo Storefront
+
+`python tasks.py demo-ui` serves the NovaMart E-Commerce Storefront on <http://127.0.0.1:8082>. It acts as an independent realistic web application featuring simulated taxation errors, lookup bottlenecks, and resource leaks for live testing—completely decoupled from the main healing engine.
 
 ## Read-only dashboard
 
@@ -165,6 +173,8 @@ Safety invariants:
 
 ## Documentation
 
+- [`docs/WHITEBOOK_PART1.md`](docs/WHITEBOOK_PART1.md) — Comprehensive Academic Whitebook Part 1 (Front Matter, Lit Survey, Architecture, Algorithms, UML/DFD).
+- [`docs/WHITEBOOK_PART2.md`](docs/WHITEBOOK_PART2.md) — Academic Whitebook Part 2 (Implementation Plan, Test Cases, Results, Conclusions, References).
 - [`docs/PROJECT_EXPLAINED.md`](docs/PROJECT_EXPLAINED.md) — plain-English project guide, including the end-user view.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — components and flow.
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) — ADRs, including fail-closed rules.

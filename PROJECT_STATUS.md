@@ -1,9 +1,9 @@
-# Project status (regenerated 2026-11-06)
+# Project status (regenerated 2026-11-07)
 
 Snapshot: branch `chore/baseline`, after the 2026-11-04 evidence audit, the
-2026-11-05 live-golden derivation, and the 2026-11-06 gate measurement
-correction approved by the project owner (HEAD moves with the evidence
-commit).
+2026-11-05 live-golden derivation, the 2026-11-06 gate measurement correction,
+and the 2026-11-07 Codebase Healing & Optimality Studio, Standalone Demo Storefront,
+and Whitebook documentation release.
 
 Labels: **MEASURED** = observed from a real run in a recorded session.
 **SIMULATED** = produced by the Healenium simulator or in-process replay,
@@ -12,38 +12,48 @@ rerun, or a missing input).
 
 ## Summary
 
-The healing pipeline is implemented end-to-end: classify → match →
-sandbox replay → layered Critic → policy gate → explanation record →
-alert / shadow PR, with an API sidecar, a read-only local dashboard, and
-quality tooling. **MEASURED this session (2026-11-06, Python 3.12.10):
-204 tests pass; lint and mypy are clean; the 24-case demo matches 24/24;
-gates report 11 PASS, 0 FAIL, 1 UNVERIFIED (normal mode exit 0; strict
-mode exit 1 on the survival gate).** The 2026-11-06 measurement correction
-was explicitly approved by the project owner: the adversarial gate now
-measures the shipped orchestrator path (0.0, all 9 cases escalate), and the
-latency gate measures pipeline overhead (19.99 ms). The raw matcher's 9/9
-adversarial heals and the 1122 ms browser time remain visible as
-non-gating diagnostics; no report value or threshold was changed.
+The healing pipeline and codebase optimization system are implemented end-to-end:
+classify → match → sandbox replay → layered Critic → policy gate → explanation record →
+alert / shadow PR, with an API sidecar, a read-only local dashboard, the Codebase
+Healing & Optimality Studio Web UI, an independent demo e-commerce storefront, and
+quality tooling. **MEASURED this session (2026-11-07, Python 3.12.10):
+222 tests pass; ruff check and ruff format are clean; mypy reports 0 issues in
+60 source files; the 24-case demo matches 24/24; gates report 11 PASS, 0 FAIL,
+1 UNVERIFIED (normal mode exit 0; strict mode exit 1 on the survival gate).**
+The 2026-11-06 measurement correction was explicitly approved by the project owner:
+the adversarial gate now measures the shipped orchestrator path (0.0, all 9 cases escalate),
+and the latency gate measures pipeline overhead (19.99 ms). The raw matcher's 9/9
+adversarial heals and the 1122 ms browser time remain visible as non-gating diagnostics.
 
-The held-out set now exists and was measured (previous status said it was
-absent): UI 24/24 correct with 0 false heals; API 10/11, with one
-documented label/coverage miss that fails closed. `heal_accuracy [live]`
-now **PASSES** at 1.0, but from `golden_live.json` derived from the
-historical 2026-10-08 live E2E report; the stack was not re-run. Survival
-remains UNVERIFIED by design (no history).
+### New Features Implemented (2026-11-07)
 
-## Verification this session (MEASURED 2026-11-06)
+1. **Codebase Healing & Optimality Studio (`healing/codebase/`)**:
+   - Web application on `http://localhost:8081` (`tasks.py studio`).
+   - 3-stage interactive wizard: (1) Codebase zip upload or built-in sample selection with 5.2s animated radar scanner modal; (2) Defect & performance bottleneck classification; (3) Explainable AI (XAI) audit breakdown with unified syntax-highlighted diffs and one-click zip download.
+   - Dual theme support: Dark and Light modes with localStorage persistence.
+   - Autonomous AST Bug Healer: division by zero guards, mutable default argument replacement, unclosed resource context managers, and name error fixes.
+   - Code Optimality Engine: replaces linear loop searches with $O(1)$ set lookups, unmemoized recursion with dynamic programming caches (`@lru_cache`), and repeated string concatenation with list buffer joins.
+   - Local free LLM integration (Ollama / LocalAI) with deterministic AST rule-based fallback.
+2. **NovaMart E-Commerce Demo Storefront (`demo_app/`)**:
+   - Standalone application on `http://localhost:8082` (`tasks.py demo-ui`).
+   - Strictly decoupled from the main healing engine; provides live e-commerce workflows (tax computation, promotions, loyalty tiering, invoice generation) exhibiting realistic bugs for demonstration.
+3. **Comprehensive Academic Whitebook (`docs/WHITEBOOK_PART1.md`, `docs/WHITEBOOK_PART2.md`)**:
+   - Complete 93-page whitebook faithfully generated in Markdown, ready for review or export.
+
+## Verification this session (MEASURED 2026-11-07)
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 204 passed in 24.96 s |
+| `pytest -q` | 222 passed in 106.17 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 177 files already formatted |
-| `mypy healing` | no issues in 52 source files |
+| `ruff format --check .` | 192 files already formatted |
+| `mypy healing` | no issues in 60 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.bench_demo_cases` | 24/24, 0 false heals, 0 wrong escalations |
 | `python tasks.py evidence-snapshot` | in-process quality transcript, exit 0 |
-| `python tasks.py dashboard` | local read-only page, HTTP 200; 11/0/1 plus diagnostics; screenshot saved |
+| `python tasks.py dashboard` | local read-only page, HTTP 200; 11/0/1 plus diagnostics |
+| `python tasks.py studio` | Codebase Healing Studio on port 8081, HTTP 200 |
+| `python tasks.py demo-ui` | Demo E-Commerce Storefront on port 8082, HTTP 200 |
 | `python -m scripts.bench_golden_live` | 24 cases, heal_accuracy 1.0 |
 | `python -m scripts.check_gates` | 11 PASS / 0 FAIL / 1 UNVERIFIED, exit 0 |
 | `python -m scripts.check_gates --strict` | same gate counts, exit 1 on the UNVERIFIED survival gate |
