@@ -1,0 +1,9 @@
+﻿environment: clean venv at C:\Users\Athar\AppData\Local\Temp\opencode\healing-sbom-clean-20261107
+python: Python 3.12.10
+command: python -m scripts.sbom --check
+
+wrote sbom.json with 56 components
+license allowlist: 56 allowed, 0 disallowed
+result: PASS
+
+exit_code: 0

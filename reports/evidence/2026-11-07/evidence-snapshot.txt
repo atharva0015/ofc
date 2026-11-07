@@ -1,0 +1,4 @@
+﻿+ C:\Users\Athar\Desktop\MAJOR PROJECT\MVP\.venv312\Scripts\python.exe -m scripts.evidence_snapshot
+wrote reports\evidence\2026-11-07\quality_snapshot.json
+sections: assertion_guard, autonomy, calibration, dedupe, gitops, gitops_backend, label, masking, metrics, narrative, survival
+exit_code: 0

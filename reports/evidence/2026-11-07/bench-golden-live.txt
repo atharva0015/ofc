@@ -1,0 +1,2 @@
+﻿wrote benchmark/reports/golden_live.json: heal_accuracy=1.0 cases=24 escaped=0
+exit_code: 0

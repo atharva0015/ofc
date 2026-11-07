@@ -1,0 +1,8 @@
+﻿environment: project venv .venv312, Python 3.12.10
+command: python -m scripts.sbom --check
+
+wrote sbom.json with 61 components
+license allowlist: 61 allowed, 0 disallowed
+result: PASS
+
+exit_code: 0

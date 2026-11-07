@@ -1,0 +1,5 @@
+﻿url: http://127.0.0.1:8082/
+status: 200
+bytes: 17519
+title: NovaMart — Demo E-Commerce & Order Analytics
+exit_code: 0
